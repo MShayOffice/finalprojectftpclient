@@ -1,6 +1,8 @@
 package ftp.test;
 
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -30,15 +32,18 @@ public class FtpList extends ListActivity{
             public void onItemClick(AdapterView<?> parent, View view,
                 int position, long id) {
    
-                // selected item
-                String product = ((TextView) view).getText().toString();
-                //String[] transfer = (ftpGetCurrentWorkingDirectory(aFTPClient, product));
+                // selected item. If replaced with an inputted String (Ex: "2001") everything will work.
+            	// We want to get the value from the item the user clicks on. 
+                String text = (String) ((TextView) view).getText();
+
+            	if (ftpConnect(aFTPClient, "193.43.36.131", "anonymous", "anonymous", 21)) {
+                String[] transfer = (ftpGetCurrentWorkingDirectory(aFTPClient, text));
                 // Launching new Activity on selecting single List Item
-                Intent newwindow = new Intent(FtpList.this, testList.class);
-                //newwindow.putExtra("product", product);
-                //newwindow.putExtra("transfer", transfer);
+                Intent newwindow = new Intent(FtpList.this, FtpList.class);
+               // newwindow.putExtra("product", product);
+                newwindow.putExtra("transfer", transfer);
                 startActivity(newwindow);
-   
+            	}
             }
           });
 	}
@@ -64,9 +69,9 @@ public class FtpList extends ListActivity{
     	}*/
 
     }
-	public String[] ftpGetCurrentWorkingDirectory(FTPClient mFTPClient, String product) {
+	public String[] ftpGetCurrentWorkingDirectory(FTPClient mFTPClient, String text) {
 		try {
-			mFTPClient.changeWorkingDirectory("Radio/MP3/" + product);
+			mFTPClient.changeWorkingDirectory("Radio/MP3/" + text);
 			String[] workingDir = mFTPClient.listNames();
 			// display current directory
 			Toast.makeText(getApplicationContext(),
@@ -81,5 +86,26 @@ public class FtpList extends ListActivity{
 					.show();
 			return null;
 		}
+	}
+	public boolean ftpConnect(FTPClient mFTPClient, String host,
+			String username, String password, int port) {
+		try {
+			// connecting to the host
+			mFTPClient.connect(host, port);
+			// now check the reply code, if positive mean connection success
+			if (FTPReply.isPositiveCompletion(mFTPClient.getReplyCode())) {
+				// login using username & password4
+				boolean status = mFTPClient.login(username, password);
+
+				mFTPClient.setFileType(FTP.BINARY_FILE_TYPE);
+				mFTPClient.enterLocalPassiveMode();
+
+				return status;
+			}
+		} catch (Exception e) {
+
+		}
+
+		return false;
 	}
 }
