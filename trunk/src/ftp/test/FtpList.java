@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,13 +35,14 @@ public class FtpList extends ListActivity{
    
                 // selected item. If replaced with an inputted String (Ex: "2001") everything will work.
             	// We want to get the value from the item the user clicks on. 
-                String text = (String) ((TextView) view).getText();
-
+                String text = ((TextView) view).getText().toString();
+            	
+                //For some reason, the connection drops between windows. Keeping this here will temporarily keep the connection.
             	if (ftpConnect(aFTPClient, "193.43.36.131", "anonymous", "anonymous", 21)) {
                 String[] transfer = (ftpGetCurrentWorkingDirectory(aFTPClient, text));
+                
                 // Launching new Activity on selecting single List Item
                 Intent newwindow = new Intent(FtpList.this, FtpList.class);
-               // newwindow.putExtra("product", product);
                 newwindow.putExtra("transfer", transfer);
                 startActivity(newwindow);
             	}
