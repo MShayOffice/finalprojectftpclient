@@ -41,6 +41,7 @@ public class FtpList extends ListActivity{
             	if (ftpConnect(aFTPClient, "193.43.36.131", "anonymous", "anonymous", 21)) {
                 String[] transfer = (ftpGetCurrentWorkingDirectory(aFTPClient, text));
                 
+                
                 // Launching new Activity on selecting single List Item
                 Intent newwindow = new Intent(FtpList.this, FtpList.class);
                 newwindow.putExtra("transfer", transfer);
