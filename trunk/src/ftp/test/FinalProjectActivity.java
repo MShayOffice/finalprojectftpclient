@@ -134,7 +134,7 @@ public class FinalProjectActivity extends Activity {
     public String[] ftpGetCurrentWorkingDirectory(FTPClient mFTPClient) {
 		try {
 			mFTPClient.changeWorkingDirectory("/");
-			directory = "/";
+			directory = mFTPClient.printWorkingDirectory();
 			String[] workingDir = mFTPClient.listNames();
 			// display current directory
 			Toast.makeText(getApplicationContext(),
