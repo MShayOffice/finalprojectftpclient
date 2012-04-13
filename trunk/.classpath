@@ -4,8 +4,7 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry kind="lib" path="C:/Users/Kyle/Desktop/commons/commons-net-3.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Kyle/Downloads/org.apache.commons.net_2.0.0.v200905272248.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Chappy/Documents/Kwantlen/Spring 2012/INFO 3210 S10 - Distributed Systems/Workspace/FinalProject/commons-net-3.1/commons-net-3.1.jar"/>
 	<classpathentry kind="lib" path="libs/org.apache.commons.net_2.0.0.v200905272248.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

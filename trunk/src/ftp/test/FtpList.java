@@ -1,5 +1,6 @@
 package ftp.test;
 
+//To test, 193.43.36.131, anonymous, anonymous, 21
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
@@ -7,52 +8,57 @@ import org.apache.commons.net.ftp.FTPReply;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.view.*;
+import java.util.*;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class FtpList extends ListActivity{
 	FTPClient aFTPClient = new FTPClient();
-	String directory;
+//	String directory;
+	String[] thisConnection;
+	ArrayList<String> thisFolder;
+	
+	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         Intent newwindow = getIntent();
         String[] transfer = newwindow.getStringArrayExtra("transfer");
-        directory = newwindow.getStringExtra("directory");
-        checkDir(aFTPClient);
+//        directory = newwindow.getStringExtra("directory");
+        thisConnection = newwindow.getStringArrayExtra("thisConnection");
+        thisFolder = newwindow.getStringArrayListExtra("thisFolder");
+
+//        checkDir(aFTPClient);
         //displayFolderNames(transfer);
         this.setListAdapter(new ArrayAdapter<String>(this, ftp.test.R.layout.ftplist, ftp.test.R.id.label, transfer));
         
         ListView lv = getListView();
+        
         lv.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                 int position, long id) {
    
                 // selected item. If replaced with an inputted String (Ex: "2001") everything will work.
             	// We want to get the value from the item the user clicks on. 
-                String text = ((TextView) view).getText().toString();
+                thisFolder.add(((TextView) view).getText().toString());
             	
                 //For some reason, the connection drops between windows. Keeping this here will temporarily keep the connection.
-            	if (ftpConnect(aFTPClient, "193.43.36.131", "anonymous", "anonymous", 21)) {
-                String[] transfer = (ftpGetCurrentWorkingDirectory(aFTPClient, text));
-                
-                
-                // Launching new Activity on selecting single List Item
-                Intent newwindow = new Intent(FtpList.this, FtpList.class);
-                newwindow.putExtra("transfer", transfer);
-                newwindow.putExtra("directory", directory);
-                startActivity(newwindow);
+            	if (ftpConnect(aFTPClient, thisConnection[0], thisConnection[1], thisConnection[2], Integer.parseInt(thisConnection[3]))) {
+	                String[] transfer = (ftpGetCurrentWorkingDirectory(aFTPClient));
+	                
+	                
+	                // Launching new Activity on selecting single List Item
+	                Intent newwindow = new Intent(FtpList.this, FtpList.class);
+	                newwindow.putExtra("transfer", transfer);
+//	                newwindow.putExtra("directory", directory);
+	                newwindow.putExtra("thisConnection", thisConnection);
+	                newwindow.putExtra("thisFolder", thisFolder);
+	                startActivity(newwindow);
             	}
             }
           });
 	}
+	
 	public void displayFolderNames (String[] names)
     {
     	/*for (int i = 0; i < names.length; i++)
@@ -75,19 +81,22 @@ public class FtpList extends ListActivity{
     	}*/
 
     }
-	public String[] ftpGetCurrentWorkingDirectory(FTPClient mFTPClient, String text) {
+	
+	public String[] ftpGetCurrentWorkingDirectory(FTPClient mFTPClient) {
 		try {
 			//directory = mFTPClient.printWorkingDirectory();
-			directory =  directory + "/" +  text;
+			String directory =  "/";
+			for(int x = 1; x<thisFolder.size(); x++)
+			{
+				directory = directory + "/" + thisFolder.get(x);
+			}
 			mFTPClient.changeWorkingDirectory(directory);
-			
 			
 			String[] workingDir = mFTPClient.listNames();
 			// display current directory
 			Toast.makeText(getApplicationContext(),
 					"You are at: " + mFTPClient.printWorkingDirectory(), 4)
 					.show();
-			
 			return workingDir;
 		} catch (Exception e) {
 			// Log.d(TAG, "Error: could not get current working directory.");
@@ -97,9 +106,10 @@ public class FtpList extends ListActivity{
 			return null;
 		}
 	}
+	
 	public void checkDir(FTPClient mFTPClient) {
 		try {
-			directory = mFTPClient.printWorkingDirectory();
+//			directory = mFTPClient.printWorkingDirectory();
 			
 		} catch (Exception e) {
 			// Log.d(TAG, "Error: could not get current working directory.");
@@ -108,6 +118,7 @@ public class FtpList extends ListActivity{
 					.show();
 		}
 	}
+	
 	public boolean ftpConnect(FTPClient mFTPClient, String host,
 			String username, String password, int port) {
 		try {
@@ -129,4 +140,34 @@ public class FtpList extends ListActivity{
 
 		return false;
 	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event)  {
+	    if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+	        // do something on back.
+	    	thisFolder.remove(thisFolder.get(thisFolder.size()-1));
+	    	if (thisFolder.size() == 0)
+			{
+		
+			}
+	    	else
+	    	{
+	        	if (ftpConnect(aFTPClient, thisConnection[0], thisConnection[1], thisConnection[2], Integer.parseInt(thisConnection[3]))) {
+	                String[] transfer = (ftpGetCurrentWorkingDirectory(aFTPClient));
+	                
+	                // Launching new Activity on selecting single List Item
+	                Intent newwindow = new Intent(FtpList.this, FtpList.class);
+	                newwindow.putExtra("transfer", transfer);
+	//                newwindow.putExtra("directory", directory);
+	                newwindow.putExtra("thisConnection", thisConnection);
+	                newwindow.putExtra("thisFolder", thisFolder);
+	                startActivity(newwindow);
+	        	}
+		        return true;
+	    	}
+	    }
+
+	    return super.onKeyDown(keyCode, event);
+	}
+
 }
