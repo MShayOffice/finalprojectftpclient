@@ -27,6 +27,7 @@ public class FinalProjectActivity extends Activity {
 	private EditText password;
 	private EditText port;
 	private EditText resultText;
+	String directory;
 
 	FTPClient aFTPClient = new FTPClient();
 
@@ -68,6 +69,7 @@ public class FinalProjectActivity extends Activity {
 					String[] transfer = (ftpGetCurrentWorkingDirectory(aFTPClient));
 					Intent newwindow = new Intent(FinalProjectActivity.this, FtpList.class);
 					newwindow.putExtra("transfer", transfer);
+					newwindow.putExtra("directory", directory);
     			    startActivity(newwindow);
     			    
 					//displayFolderNames(ftpGetCurrentWorkingDirectory(aFTPClient),resultText);
@@ -131,7 +133,8 @@ public class FinalProjectActivity extends Activity {
 	}
     public String[] ftpGetCurrentWorkingDirectory(FTPClient mFTPClient) {
 		try {
-			mFTPClient.changeWorkingDirectory("Radio/MP3");
+			mFTPClient.changeWorkingDirectory("/");
+			directory = "/";
 			String[] workingDir = mFTPClient.listNames();
 			// display current directory
 			Toast.makeText(getApplicationContext(),

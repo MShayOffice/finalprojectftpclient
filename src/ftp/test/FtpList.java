@@ -20,11 +20,12 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class FtpList extends ListActivity{
 	FTPClient aFTPClient = new FTPClient();
+	String directory;
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-       //this.setContentView(R.layout.ftplist);
         Intent newwindow = getIntent();
         String[] transfer = newwindow.getStringArrayExtra("transfer");
+        directory = newwindow.getStringExtra("directory");
         //displayFolderNames(transfer);
         this.setListAdapter(new ArrayAdapter<String>(this, ftp.test.R.layout.ftplist, ftp.test.R.id.label, transfer));
         
@@ -45,6 +46,7 @@ public class FtpList extends ListActivity{
                 // Launching new Activity on selecting single List Item
                 Intent newwindow = new Intent(FtpList.this, FtpList.class);
                 newwindow.putExtra("transfer", transfer);
+                newwindow.putExtra("directory", directory);
                 startActivity(newwindow);
             	}
             }
@@ -74,7 +76,9 @@ public class FtpList extends ListActivity{
     }
 	public String[] ftpGetCurrentWorkingDirectory(FTPClient mFTPClient, String text) {
 		try {
-			mFTPClient.changeWorkingDirectory("Radio/MP3/" + text);
+			mFTPClient.changeWorkingDirectory(directory + text);
+			directory = directory + text + "/";
+			
 			String[] workingDir = mFTPClient.listNames();
 			// display current directory
 			Toast.makeText(getApplicationContext(),
