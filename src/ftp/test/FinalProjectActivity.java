@@ -1,5 +1,6 @@
 package ftp.test;
 
+//To test, 193.43.36.131, anonymous, anonymous, 21
 //import org.apache.commons.net.ftp.FTPClient;
 
 import org.apache.commons.net.ftp.FTP;
@@ -12,10 +13,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+import java.util.*;
+import android.widget.*;
 
 
 public class FinalProjectActivity extends Activity {
@@ -27,7 +26,7 @@ public class FinalProjectActivity extends Activity {
 	private EditText password;
 	private EditText port;
 	private EditText resultText;
-	String directory;
+//	String directory;
 
 	FTPClient aFTPClient = new FTPClient();
 
@@ -37,8 +36,7 @@ public class FinalProjectActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        
-       this.connectButton = (Button)findViewById(R.id.button2);
+    	this.connectButton = (Button)findViewById(R.id.button2);
         this.disconnectButton = (Button)findViewById(R.id.button1);
         this.host = (EditText)findViewById(R.id.editText1);
         this.user = (EditText)findViewById(R.id.editText2);
@@ -53,23 +51,30 @@ public class FinalProjectActivity extends Activity {
 				String hostEntry = null;
 				String userEntry = null;
 				String passwordEntry = null;
-				int portEntry = 0;
+				String portEntryString = null;
+//				int portEntry = 0;
 				
 				//Modularizing this into a method caused issues. Values would not be grabbed from the UI.
 				
 				hostEntry = host.getText().toString();
 				userEntry = user.getText().toString();
 				passwordEntry = password.getText().toString();
-				portEntry = Integer.parseInt(port.getText().toString());
+				portEntryString = port.getText().toString();
+//				portEntry = Integer.parseInt(port.getText().toString());	
 				
+				String[] thisConnection = {hostEntry, userEntry, passwordEntry, portEntryString};
+				ArrayList<String> thisFolder = new ArrayList<String>();
 				
-				if (ftpConnect(aFTPClient, hostEntry, userEntry, passwordEntry, portEntry)) {
+				if (ftpConnect(aFTPClient, hostEntry, userEntry, passwordEntry, Integer.parseInt(portEntryString))) {
 					resultText.append("Connection success!");
 					resultText.append("\n");
 					String[] transfer = (ftpGetCurrentWorkingDirectory(aFTPClient));
 					Intent newwindow = new Intent(FinalProjectActivity.this, FtpList.class);
+					
 					newwindow.putExtra("transfer", transfer);
-					newwindow.putExtra("directory", directory);
+//					newwindow.putExtra("directory", directory);
+					newwindow.putExtra("thisConnection", thisConnection);
+					newwindow.putExtra("thisFolder", thisFolder);
     			    startActivity(newwindow);
     			    
 					//displayFolderNames(ftpGetCurrentWorkingDirectory(aFTPClient),resultText);
@@ -131,10 +136,11 @@ public class FinalProjectActivity extends Activity {
 
 		return false;
 	}
+    
     public String[] ftpGetCurrentWorkingDirectory(FTPClient mFTPClient) {
 		try {
 			mFTPClient.changeWorkingDirectory("/");
-			directory = mFTPClient.printWorkingDirectory();
+//			directory = mFTPClient.printWorkingDirectory();
 			String[] workingDir = mFTPClient.listNames();
 			// display current directory
 			Toast.makeText(getApplicationContext(),
@@ -150,13 +156,13 @@ public class FinalProjectActivity extends Activity {
 			return null;
 		}
 	}
-    
-    public void displayFolderNames (String[] names, TextView view)
-    {
-    	for (int i = 0; i < names.length; i++)
-    	{
-    		resultText.append(names[i] + "\n");
-    	}
-    }
+//    
+//    public void displayFolderNames (String[] names, TextView view)
+//    {
+//    	for (int i = 0; i < names.length; i++)
+//    	{
+//    		resultText.append(names[i] + "\n");
+//    	}
+//    }
 
 }
