@@ -26,6 +26,7 @@ public class FtpList extends ListActivity{
         Intent newwindow = getIntent();
         String[] transfer = newwindow.getStringArrayExtra("transfer");
         directory = newwindow.getStringExtra("directory");
+        checkDir(aFTPClient);
         //displayFolderNames(transfer);
         this.setListAdapter(new ArrayAdapter<String>(this, ftp.test.R.layout.ftplist, ftp.test.R.id.label, transfer));
         
@@ -76,8 +77,10 @@ public class FtpList extends ListActivity{
     }
 	public String[] ftpGetCurrentWorkingDirectory(FTPClient mFTPClient, String text) {
 		try {
-			mFTPClient.changeWorkingDirectory(directory + text);
-			directory = directory + text + "/";
+			//directory = mFTPClient.printWorkingDirectory();
+			directory =  directory + "/" +  text;
+			mFTPClient.changeWorkingDirectory(directory);
+			
 			
 			String[] workingDir = mFTPClient.listNames();
 			// display current directory
@@ -92,6 +95,17 @@ public class FtpList extends ListActivity{
 			Toast.makeText(getApplicationContext(), "Cannot get current dir", 4)
 					.show();
 			return null;
+		}
+	}
+	public void checkDir(FTPClient mFTPClient) {
+		try {
+			directory = mFTPClient.printWorkingDirectory();
+			
+		} catch (Exception e) {
+			// Log.d(TAG, "Error: could not get current working directory.");
+			String msg = "cannot get current working dir";
+			Toast.makeText(getApplicationContext(), "Cannot get current dir", 4)
+					.show();
 		}
 	}
 	public boolean ftpConnect(FTPClient mFTPClient, String host,
