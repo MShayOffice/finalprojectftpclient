@@ -86,7 +86,7 @@ public class FtpList extends ListActivity{
 		try {
 			//directory = mFTPClient.printWorkingDirectory();
 			String directory =  "/";
-			for(int x = 1; x<thisFolder.size(); x++)
+			for(int x = 0; x<thisFolder.size(); x++)
 			{
 				directory = directory + "/" + thisFolder.get(x);
 			}
@@ -145,13 +145,13 @@ public class FtpList extends ListActivity{
 	public boolean onKeyDown(int keyCode, KeyEvent event)  {
 	    if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
 	        // do something on back.
-	    	thisFolder.remove(thisFolder.get(thisFolder.size()-1));
 	    	if (thisFolder.size() == 0)
 			{
-		
+	    		startActivity(new Intent(FtpList.this, FinalProjectActivity.class));
 			}
 	    	else
 	    	{
+		    	thisFolder.remove(thisFolder.get(thisFolder.size()-1));
 	        	if (ftpConnect(aFTPClient, thisConnection[0], thisConnection[1], thisConnection[2], Integer.parseInt(thisConnection[3]))) {
 	                String[] transfer = (ftpGetCurrentWorkingDirectory(aFTPClient));
 	                
