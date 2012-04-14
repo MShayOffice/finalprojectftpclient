@@ -12,7 +12,7 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
+import android.view.*;
 import java.util.*;
 import android.widget.*;
 
@@ -156,6 +156,19 @@ public class FinalProjectActivity extends Activity {
 			return null;
 		}
 	}
+    
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+        if ( keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0 ) 
+        {
+            // do something on back.
+            moveTaskToBack( true );
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+
 //    
 //    public void displayFolderNames (String[] names, TextView view)
 //    {
