@@ -9,9 +9,11 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.*;
-import java.util.*;
 import android.widget.*;
+import android.graphics.*;
 import android.widget.AdapterView.OnItemClickListener;
+import java.util.*;
+import java.io.*;
 
 public class FtpList extends ListActivity{
 	FTPClient aFTPClient = new FTPClient();
@@ -90,6 +92,8 @@ public class FtpList extends ListActivity{
 			{
 				directory = directory + "/" + thisFolder.get(x);
 			}
+			
+			if (new File(directory).isDirectory()){			
 			mFTPClient.changeWorkingDirectory(directory);
 			
 			String[] workingDir = mFTPClient.listNames();
@@ -98,6 +102,18 @@ public class FtpList extends ListActivity{
 					"You are at: " + mFTPClient.printWorkingDirectory(), 4)
 					.show();
 			return workingDir;
+			}
+			else if (new File(directory).isFile()){
+		    	thisFolder.remove(thisFolder.get(thisFolder.size()-1));				
+		    	return null;
+			}
+			else{
+		    	thisFolder.remove(thisFolder.get(thisFolder.size()-1));				
+				String msg = "Could not access that filepath";
+				Toast.makeText(getApplicationContext(), msg, 4)
+						.show();
+				return null;				
+			}
 		} catch (Exception e) {
 			// Log.d(TAG, "Error: could not get current working directory.");
 			String msg = "cannot get current working dir";
