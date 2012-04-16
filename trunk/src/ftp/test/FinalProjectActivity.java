@@ -3,9 +3,6 @@ package ftp.test;
 //To test, 193.43.36.131, anonymous, anonymous, 21
 //import org.apache.commons.net.ftp.FTPClient;
 
-import org.apache.commons.net.ftp.FTP;
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPReply;
 
 import android.app.Activity;
 import android.app.ListActivity;
@@ -14,6 +11,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
 import java.util.*;
+
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
+
 import android.widget.*;
 
 
